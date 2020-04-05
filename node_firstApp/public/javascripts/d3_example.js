@@ -48,18 +48,6 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
       confirmedList.push(d.confirmed);
     });
 
-    /*let mainDataLine = [];
-    mainData.forEach(d => {
-      let temp = [];
-      confirmedList.push(d.confirmed);
-      dateList.push(d3.timeParse("%Y-%m-%d")(d.date));
-      temp.date = d3.timeParse("%Y-%m-%d")(d.date);
-      temp.confirmed = d.confirmed;
-      mainDataLine.push(temp);
-    });*/
-    // console.log(dateList);
-
-
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
       .domain(d3.extent(dateList))
