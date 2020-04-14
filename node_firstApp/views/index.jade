@@ -1,6 +1,15 @@
 extends layout
 
 block content
+    .form-check-inline
+      label.form-check-label
+        | Find Country 
+        input(style='display: inline', type='text', id='search')
+        input(style='display: inline', type='submit', name='submitBtn', value='Search')
+    br
+    br
+    
     // Create a div where the graph will take place
     #my_dataviz
     script(src='/javascripts/d3_example.js')
+    

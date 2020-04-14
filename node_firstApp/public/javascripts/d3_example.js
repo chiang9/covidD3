@@ -35,7 +35,8 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
 
     let dateList = [];
     let mainData = [];
-    
+    // const g = svg.append("g");
+
     countries.forEach(country => {
       let countryMain = {
         country: country,
@@ -72,7 +73,7 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
     var yAxis = d3.axisLeft(y).ticks(20).tickSize(-width) //horizontal ticks across svg width
 
     svg.append("g")
-          .attr("class", "y axis")
+          .attr("id", "y-axis")
           .call(yAxis)
           .call(g => {
             g.selectAll("text")
@@ -105,7 +106,7 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
         .text("Confirmed");
 
     // Title
-    svg.append("text")
+    var title = svg.append("text")
         .attr("x", (width / 2))             
         .attr("y", 0 - (margin.top / 2))
         .attr("text-anchor", "middle")  
@@ -140,7 +141,11 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
             .text(d=>d)
 
     // Add the line
-    svg.append("path")
+    var line = d3.line()
+    .x(d=> x(d.date))
+    .y(d=> y(d.value))
+
+    var line1 = svg.append("path")
       .datum(lineData)
       .attr("fill", "none")
       .attr("stroke", "#395af9")
@@ -149,7 +154,7 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
         .x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d.date)) })
         .y(function(d) { return y(d.confirmed) })
         )
-    svg.append("path")
+    var line2 = svg.append("path")
         .datum(lineData)
         .attr("fill", "none")
         .attr("stroke", "#FF000")
@@ -158,7 +163,7 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
           .x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d.date)) })
           .y(function(d) { return y(d.deaths) })
           )
-    svg.append("path")
+    var line3 = svg.append("path")
       .datum(lineData)
       .attr("fill", "none")
       .attr("stroke", "#00bd03")
@@ -167,7 +172,85 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
         .x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d.date)) })
         .y(function(d) { return y(d.recovered) })
         )
+    
+    d3.selectAll(("input[name='submitBtn']")).on('click', function(){
+      var val = document.getElementById('search').value;
+      val = val.charAt(0).toUpperCase() + val.slice(1)
+          updateChart(val);
+        })
+    
+    function updateChart(chartcountry) {
+        console.log("find new country " + chartcountry);
+        console.log(countries);
 
+        if (!countries.includes(chartcountry)) {
+          console.log("country not found!!");
+          return;
+        }
+
+        var datanew = mainData.filter(x=>x.country ==chartcountry)[0];
+        console.log(datanew);
+      
+        // axis transform
+        y.domain([0, d3.max(datanew.value, function(d) { return +d.confirmed; })])
+            
+        var axisEl = svg.select("#y-axis");
+    
+        // Update the axis
+        axisEl.transition()
+            .duration(500)
+            .call(yAxis)
+            .call(g => {
+              g.selectAll("text")
+              .style("text-anchor", "middle")
+              .attr('fill', '#A9A9A9')
+              g.selectAll("line")
+                .attr('stroke', '#A9A9A9')
+                .attr('stroke-width', 0.7) // make horizontal tick thinner and lighter so that line paths can stand out
+                .attr('opacity', 0.3)
+  
+              g.select(".domain").remove()});
+
+
+        // line transform
+        line1.datum(datanew.value)
+            .transition()
+            .duration(750)
+            .attr("d", d3.line()
+                .x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d.date)) })
+                .y(function(d) { return y(d.confirmed) })
+        )
+
+        line2.datum(datanew.value)
+            .transition()
+            .duration(750)
+            .attr("d", d3.line()
+                .x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d.date)) })
+                .y(function(d) { return y(d.deaths) })
+        )
+
+        line3.datum(datanew.value)
+            .transition()
+            .duration(750)
+            .attr("d", d3.line()
+                .x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d.date)) })
+                .y(function(d) { return y(d.recovered) })
+        )
+        
+        // title change
+        title.text(datanew.country + " Confirmed Cases")
+        
+
+          // mouseG.selectAll('.mouse-per-line')
+          //   .data(res_nested)
+
+          // mouseG.on('mousemove', function () { 
+          //     var mouse = d3.mouse(this)
+          //     updateTooltipContent(mouse, res_nested)
+          //   })
+        }
+
+      
   }
 )
 
