@@ -218,10 +218,6 @@ d3.json("https://pomber.github.io/covid19/timeseries.json",
       updateChart(val);
     })
 
-
-
-   
-
   }
 )
 
