@@ -1,0 +1,3 @@
+tableGenerate();
+lineChartCreate();
+tableFunc();
