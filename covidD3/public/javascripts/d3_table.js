@@ -21,6 +21,14 @@ function tableGenerate() {
         let element = data[country];
         let elen = element.length;
 
+        for (var i =0; i<element.length; i++) {
+          if (element[i].confirmed != 0) {
+            console.log(country);
+            console.log(element[i].date);
+            break;
+          }
+        };
+
         let confirmed_number = element[elen - 1].confirmed;
         let death_number = element[elen - 1].deaths;
         let recovered_number = element[elen - 1].recovered;

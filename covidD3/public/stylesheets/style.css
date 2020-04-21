@@ -6,3 +6,21 @@ body {
 a {
   color: #00B7FF;
 }
+.header {
+  margin-top: 60px;
+  margin-left: 60px;
+  text-align: left;
+}
+
+input {
+  margin-right: 10px;
+}
+
+.form-check-label {
+  font-size: 1em;
+  margin-right: 20px;
+}
+
+.container {
+  text-align:center 
+}
