@@ -10,8 +10,8 @@
 function histGenerate() {
 
     // set the dimensions and margins of the graph
-    var margin = { top: 10, right: 30, bottom: 30, left: 40 },
-        width = 460 - margin.left - margin.right,
+    var margin = { top: 30, right: 30, bottom: 60, left: 40 },
+        width = 1080 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
@@ -37,75 +37,88 @@ function histGenerate() {
                 let elen = element.length;
 
                 for (var i = 0; i < elen; i++) {
+                    datevalue = element[i].date;
                     if (element[i].confirmed != 0) {
-                        if (!(element[i].date in histData)) {
-                            histData[element[i].date] = [];
-                            histData[element[i].date].value = 0;
+                        if (!(datevalue in histData)) {
+                            histData[datevalue] = [];
+                            histData[datevalue].value = 0;
                         }
-                        histData[element[i].date].push(country);
-                        histData[element[i].date].value += 1;
+                        histData[datevalue].push(country);
+                        histData[datevalue].value += 1;
+                        histData[datevalue].x0 = datevalue;
                         break;
                     }
                 };
-
             });
 
-            console.log(histData);
             var dateList = [];
+            var mainData = [];
             Object.getOwnPropertyNames(histData).forEach(e => {
-                dateList.push(d3.timeParse("%Y-%m-%d")(e));
+                if (e != "length") {
+                    var ele = histData[e];
+                    var x = {
+                        date: ele.x0,
+                        value: ele.value
+                    };
+                    mainData.push(x);
+                    dateList.push(e);
+                }
             });
 
-            var valList = [];
-            histData.forEach(e=>{
-                valList.push(e.vale);
-            });
+            dateList.sort(sortByDateAscending);
+
+            // Title
+            title = svg.append("text")
+                .attr("x", (width / 2))
+                .attr("y", 0 - (margin.top / 2))
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("text-decoration", "underline")
+                .text("Newly Affected Country Number");
 
             // X axis: scale and draw:
-            var x = d3.scaleTime()
-                .domain(d3.extent(dateList))
+            var x = d3.scaleBand()
+                .domain(dateList)
                 .range([0, width]);
+
+
             svg.append("g")
                 .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x));
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", "-.55em")
+                .attr("transform", "rotate(-90)");
 
-            // set the parameters for the histogram
-            var histogram = d3.histogram()
-                .value(function (d) { return d.value; })   // I need to give the vector of value
-                .domain(x.domain());  // then the domain of the graphic
-            // .thresholds(x.ticks(70)); // then the numbers of bins
 
-            // And apply this function to data to get the bins
-            var bins = histogram(histData);
-            console.log(bins);
             // Y axis: scale and draw:
             var y = d3.scaleLinear()
-                .range([height, 0]);
-            y.domain([0, 10]);   // d3.hist has to be called before the Y axis obviously
+                .range([height, 0])
+                .domain([0, 15]);
             svg.append("g")
                 .call(d3.axisLeft(y));
 
             // append the bar rectangles to the svg element
-            // svg.selectAll("rect")
-            //     .data(bins)
-            //     .enter()
-            //     .append("rect")
-            //     .attr("x", 1)
-            //     // .attr("transform", function (d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-            //     // .attr("width", function (d) { return x(d.x1) - x(d.x0) - 1; })
-            //     // .attr("height", function (d) { return height - y(d.length); })
-            //     .style("fill", "#69b3a2");
 
-            svg.selectAll("rect")
-                .data(histData)
-                .attr("x", d => dateList)
-                .attr("y", d => y(valList));
-
+            svg.selectAll("bar")
+                .data(mainData)
+                .enter().append("rect")
+                .style("fill", "steelblue")
+                .attr("x", function (d) { return x(d.date); })
+                .attr("width", x.bandwidth() - 1)
+                .attr("y", function (d) { return y(d.value); })
+                .attr("height", function (d) { return height - y(d.value); });
 
         });
 
 }
 
-
-
 histGenerate();
+
+function sortByDateAscending(a, b) {
+    // Dates will be cast to numbers automagically:
+    return parseDate(a) - parseDate(b);
+}
+
+parseDate = d3.timeParse("%Y-%m-%d");
