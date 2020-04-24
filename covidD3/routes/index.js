@@ -14,4 +14,16 @@ router.get('/line',function(req,res,next){
   res.render('line', { title: 'Line Chart' });
 });
 
+router.get('/groupBar',function(req,res,next){
+  res.render('groupBar', { title: 'Group Bar' });
+});
+
+router.get('/scatter',function(req,res,next){
+  res.render('scatter', { title: 'Scatter' });
+});
+
+router.get('/stack',function(req,res,next){
+  res.render('stack', { title: 'Stack' });
+});
+
 module.exports = router;
