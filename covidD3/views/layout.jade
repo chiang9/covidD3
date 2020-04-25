@@ -15,4 +15,20 @@ html
     script(src='/javascripts/d3_lineChart.js')
     
   body
+    nav.navbar.navbar-inverse
+      .container-fluid
+        .navbar-header
+          a.navbar-brand(href='#') CovidD3
+        ul.nav.navbar-nav
+          li#navHome
+            a(href='http://localhost:3000/') Home
+          li#navLine
+            a(href='http://localhost:3000/line') Line Chart
+          li#navTable
+            a(href='http://localhost:3000/table') Table
+          li#navHist
+            a(href='http://localhost:3000/hist') Histogram
+          li#navScatter
+            a(href='http://localhost:3000/scatter') Scatter
+     
     block content

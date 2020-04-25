@@ -122,3 +122,4 @@ function sortByDateAscending(a, b) {
 }
 
 parseDate = d3.timeParse("%Y-%m-%d");
+d3.selectAll("#navHist").attr("class", "active");

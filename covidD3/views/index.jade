@@ -3,8 +3,6 @@ extends layout
 block content
     .container
       h2 COVID19 D3
-      button.btn(type='button', onclick="location.href='/line';") Line Chart
-      button.btn.btn-primary(type='button', onclick="location.href='/table';") Table
-      button.btn.btn-success(type='button', onclick="location.href='/hist';") Histogram
-      button.btn.btn-info(type='button', onclick="location.href='/';") Interactive
       
+
+    script(src='/javascripts/d3_index.js')

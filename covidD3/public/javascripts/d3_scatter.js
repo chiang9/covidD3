@@ -82,8 +82,8 @@ function scatterGenerate() {
 
             // Add brushing
             var brush = d3.brush()                 // Add the brush feature using the d3.brush function
-                .extent([[0, 0], [width, height]]) 
-                .on("end", updateChart) 
+                .extent([[0, 0], [width, height]])
+                .on("end", updateChart)
 
 
             // axis label
@@ -134,15 +134,15 @@ function scatterGenerate() {
                 tooltip
                     .style("opacity", 1)
                     .html("Country: " + d.country + "<br>Confirmed: " + d.confirmed + "<br>Deaths: " + d.death + "<br>Recovered: " + d.recovered)
-                    .style("left", (d3.mouse(this)[0] + 30) + "px")
-                    .style("top", (d3.mouse(this)[1] + 30) + "px")
+                    .style("left", (d3.mouse(this)[0] + 0) + "px")
+                    .style("top", (d3.mouse(this)[1] + 0) + "px")
 
             }
 
             var mousemove = function (d) {
                 tooltip
-                    .style("left", (d3.mouse(this)[0]) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-                    .style("top", (d3.mouse(this)[1]) + "px")
+                    .style("left", (d3.mouse(this)[0]+ 0) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+                    .style("top", (d3.mouse(this)[1] - 50) + "px")
             }
 
             // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
@@ -157,6 +157,9 @@ function scatterGenerate() {
             var scatter = svg.append('g')
                 .attr("clip-path", "url(#clip)")
 
+            scatter.append('g')
+                .attr('class', 'brush')
+                .call(brush)
             scatter
                 .selectAll("dot")
                 .data(mainData) // the .filter part is just to keep a few dots on the chart, not all of them
@@ -165,16 +168,16 @@ function scatterGenerate() {
                 .attr("cx", function (d) { return x(d.death); })
                 .attr("cy", function (d) { return y(d.confirmed); })
                 .attr("r", 7)
+                .attr("pointer-events", "all")
                 .style("fill", "#69b3a2")
                 .style("opacity", 0.8)
                 .style("stroke", "white")
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
-                .on("mouseleave", mouseleave)
+                .on("click", mouseleave)
+                // .on("mouseleave", mouseleave)
 
-            scatter.append('g')
-                .attr('class', 'brush')
-                .call(brush)
+
 
             // A function that set idleTimeOut to null
             var idleTimeout
@@ -183,36 +186,36 @@ function scatterGenerate() {
             function updateChart() {
 
                 extent = d3.event.selection
-                
+
                 console.log(extent);
                 // If no selection, back to initial coordinate. Otherwise, update X axis domain
-                if(!extent){
-                  if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-                  x.domain([ 0,maxDeaths]);
-                  y.domain([ 0,maxConfirmed]);
-                }else{
-                var p1 = extent[0];
-                var p2 = extent[1];
-                  x.domain([ x.invert(p1[0]), x.invert(p2[0]) ])
-                  y.domain([ y.invert(p2[1]), y.invert(p1[1]) ])
-                  scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+                if (!extent) {
+                    if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
+                    x.domain([0, maxDeaths]);
+                    y.domain([0, maxConfirmed]);
+                } else {
+                    var p1 = extent[0];
+                    var p2 = extent[1];
+                    x.domain([x.invert(p1[0]), x.invert(p2[0])])
+                    y.domain([y.invert(p2[1]), y.invert(p1[1])])
+                    scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
                 }
-            
+
                 // Update axis and circle position
                 xAxis.transition().duration(1000).call(d3.axisBottom(x))
                 scatter
-                  .selectAll("circle")
-                  .transition().duration(1000)
-                  .attr("cx", function (d) { return x(d.death); } )
-                  .attr("cy", function (d) { return y(d.confirmed); } )
-            
+                    .selectAll("circle")
+                    .transition().duration(1000)
+                    .attr("cx", function (d) { return x(d.death); })
+                    .attr("cy", function (d) { return y(d.confirmed); })
+
             }
 
-            
-            
+
+
         });
 
 }
 
 scatterGenerate();
-
+d3.selectAll("#navScatter").attr("class", "active");
