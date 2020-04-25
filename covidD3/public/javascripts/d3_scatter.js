@@ -81,9 +81,9 @@ function scatterGenerate() {
                 .attr("y", 0);
 
             // Add brushing
-            var brush = d3.brushX()                 // Add the brush feature using the d3.brush function
-                .extent([[0, 0], [width, height]]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-                .on("end", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
+            var brush = d3.brush()                 // Add the brush feature using the d3.brush function
+                .extent([[0, 0], [width, height]]) 
+                .on("end", updateChart) 
 
 
             // axis label
@@ -183,13 +183,18 @@ function scatterGenerate() {
             function updateChart() {
 
                 extent = d3.event.selection
-            
+                
+                console.log(extent);
                 // If no selection, back to initial coordinate. Otherwise, update X axis domain
                 if(!extent){
                   if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-                  x.domain([ 0,maxDeaths])
+                  x.domain([ 0,maxDeaths]);
+                  y.domain([ 0,maxConfirmed]);
                 }else{
-                  x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+                var p1 = extent[0];
+                var p2 = extent[1];
+                  x.domain([ x.invert(p1[0]), x.invert(p2[0]) ])
+                  y.domain([ y.invert(p2[1]), y.invert(p1[1]) ])
                   scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
                 }
             
@@ -203,26 +208,8 @@ function scatterGenerate() {
             
             }
 
-            function updatePlot() {
-
-                // Get the value of the button
-                xlim = this.value
-
-                // Update X axis
-                x.domain([0, xlim])
-                xAxis.transition().duration(1000).call(d3.axisBottom(x))
-
-                // Update chart
-                svg.selectAll("circle")
-                    .data(mainData)
-                    .transition()
-                    .duration(1000)
-                    .attr("cx", function (d) { return x(d.death); })
-                    .attr("cy", function (d) { return y(d.confirmed); })
-            }
-
-            // Add an event listener to the button created in the html part
-            d3.select("#Xlim").on("input", updatePlot)
+            
+            
         });
 
 }
