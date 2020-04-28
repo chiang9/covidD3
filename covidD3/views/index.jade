@@ -1,8 +1,35 @@
 extends layout
 
 block content
-    .container
-      h2 COVID19 D3
-      
+    .custcontainer
+      h2 COVID19 D3 Gallery
+      .card-content-div
+      .text-content-div
+        h3 Project Description
+        p Transform the most recent corona virus data into visualization using d3.js and the project is hosted by node.js
+        p There are various charts including the line chart, histogram, scatter plot, and group bar chart.
+        p 
+          | Project Github: 
+          a(href='https://github.com/chiang9/covidD3') https://github.com/chiang9/covidD3
+        br
+        h3 Data Source
+        p 
+          | In this project, we are fetching the data from 
+          a(href='https://pomber.github.io/covid19/timeseries.json') https://pomber.github.io/covid19/timeseries.json
+          | .
+        p 
+          | Github Link: 
+          a(href='https://github.com/pomber/covid19') https://github.com/pomber/covid19
+          | .
+        p The data is in json format.
+        code 
+          | "Thailand": [
+          | {
+          | "date": "2020-1-22",
+          | "confirmed": 2,
+          | "deaths": 0,
+          | "recovered": 0
+          | },...
+
 
     script(src='/javascripts/d3_index.js')

@@ -35,9 +35,12 @@ function gBarGenerate() {
     var xSubgroup;
     var xAxis;
     var yAxis;
+    var gbar;
+    var color;
+    var grect;
 
     // Data display
-    var groups = ["US", "Canada"];
+    var groups = ["US", "Canada", "China"];
 
     d3.json("https://pomber.github.io/covid19/timeseries.json",
         function (data) {
@@ -70,7 +73,7 @@ function gBarGenerate() {
                 .padding([0.05])
 
             // color palette = one color per subgroup
-            var color = d3.scaleOrdinal()
+            color = d3.scaleOrdinal()
                 .domain(subgroups)
                 .range(['#377eb8', '#4daf4a', '#e41a1c'])
 
@@ -128,13 +131,14 @@ function gBarGenerate() {
 
 
             // Show the bars
-            svg.append("g")
+            gbar = svg.append("g")
                 .selectAll("g")
-                // Enter in data = loop group per group
                 .data(mainData)
                 .enter()
                 .append("g")
+                .attr("class", "barInfo")
                 .attr("transform", function (d) { return "translate(" + x(d.country) + ",0)"; })
+            grect = gbar
                 .selectAll("rect")
                 .data(function (d) { return subgroups.map(function (key) { return { key: key, value: d[key] }; }); })
                 .enter().append("rect")
@@ -144,10 +148,10 @@ function gBarGenerate() {
                 .attr("height", function (d) { return height - y(d.value); })
                 .attr("fill", function (d) { return color(d.key); });
 
-                // d3.select("#cbtn").on('click', updateChart(data, "Taiwan*"));
-                $("#cbtn").on("click", function() {
-                    updateChart(data,"Taiwan*")
-                })
+            gbar.exit().remove();
+            $("#cbtn").on("click", function () {
+                updateChart(data, countries[Math.floor((Math.random() * 100) + 1)]);
+            })
         });
 
     function groupDataFilter(data, selected) {
@@ -176,25 +180,41 @@ function gBarGenerate() {
 
     // chart update by country
     function updateChart(data, chartcountry) {
-
         groups.push(chartcountry);
         mainData = groupDataFilter(data, groups);
 
-        console.log(mainData);
         // axis transform
         x.domain(groups);
         y.domain([0, maxConfirmed])
+        xSubgroup.range([0, x.bandwidth()]);
+        
 
+        console.log(mainData)
         // Update the axis
         yAxis.transition()
             .duration(500)
             .call(d3.axisLeft(y))
-            
+
         xAxis.transition()
             .duration(500)
             .call(d3.axisBottom(x).tickSize(0))
 
+       
+
+        gbar
+            .transition()
+            .duration(500)
+            .attr("transform", function (d) { return "translate(" + x(d.country) + ",0)"; })
+
+        grect
+            .transition()
+            .duration(500)
+            .attr("x", function (d) { return xSubgroup(d.key); })
+            .attr("y", function (d) { return y(d.value); })
+            .attr("width", xSubgroup.bandwidth())
+            .attr("height", function (d) { return height - y(d.value); });
         
+        var bars = svg.select("g").selectAll("rect").exit().remove();
     }
 
 }

@@ -26,6 +26,9 @@ function histGenerate() {
     // variable definition
     var countries;
     var histData = [];
+    var histData = [];
+    var dateList = [];
+    
 
 
     d3.json("https://pomber.github.io/covid19/timeseries.json",
@@ -39,34 +42,23 @@ function histGenerate() {
                 for (var i = 0; i < elen; i++) {
                     datevalue = element[i].date;
                     if (element[i].confirmed != 0) {
-                        if (!(datevalue in histData)) {
-                            histData[datevalue] = [];
-                            histData[datevalue].value = 0;
+                        if (dateList.indexOf(datevalue) < 0) {
+                            dateList.push(datevalue);
+                            var hdata = {
+                                date: datevalue,
+                                country: [country]
+                            }
+                            histData.push(hdata);
+                        } else {
+                            histData[dateList.indexOf(datevalue)]["country"].push(country);
                         }
-                        histData[datevalue].push(country);
-                        histData[datevalue].value += 1;
-                        histData[datevalue].x0 = datevalue;
                         break;
                     }
                 };
             });
 
-            var dateList = [];
-            var mainData = [];
-            Object.getOwnPropertyNames(histData).forEach(e => {
-                if (e != "length") {
-                    var ele = histData[e];
-                    var x = {
-                        date: ele.x0,
-                        value: ele.value
-                    };
-                    mainData.push(x);
-                    dateList.push(e);
-                }
-            });
-
             dateList.sort(sortByDateAscending);
-
+           
             // Title
             title = svg.append("text")
                 .attr("x", (width / 2))
@@ -100,15 +92,14 @@ function histGenerate() {
                 .call(d3.axisLeft(y));
 
             // append the bar rectangles to the svg element
-
             svg.selectAll("bar")
-                .data(mainData)
+                .data(histData)
                 .enter().append("rect")
                 .style("fill", "steelblue")
                 .attr("x", function (d) { return x(d.date); })
                 .attr("width", x.bandwidth() - 1)
-                .attr("y", function (d) { return y(d.value); })
-                .attr("height", function (d) { return height - y(d.value); });
+                .attr("y", function (d) { return y(d.country.length); })
+                .attr("height", function (d) { return height - y(d.country.length); });
 
         });
 

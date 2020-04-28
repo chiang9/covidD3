@@ -1,6 +1,7 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #F1E9E6;
 }
 
 a {
@@ -21,6 +22,106 @@ input {
   margin-right: 20px;
 }
 
-.container {
-  text-align:center 
+.custcontainer {
+  text-align:center;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.card-content-div {
+  float:left;
+  width: 20%;
+}
+
+.text-content-div {
+  float:right;
+  width: 75%;
+  text-align: left;
+}
+.card_container {
+  background-color: white;
+  color: #fff;
+  width: 100%;
+  height: 220px;
+  position: relative;
+  -webkit-perspective: 100px;
+  -ms-perspective: 100px;
+  perspective: 800px;
+  border-radius: 4px;
+}
+.card {
+  margin-bottom: 10px;
+  background-color: white;
+  color: black;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+
+.modal-dialog {
+  height: 100%;
+  width: 100%;
+}
+
+
+.modal-header-card {
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e5e5e5;
+  height: 25%;
+  text-align: center;
+}
+
+.modal-body-card {
+  height: 75%;
+  font-size: 10px;
+}
+
+.modal-body-card p{
+  margin-bottom: 5px;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: -webkit-transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), -webkit-transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  cursor: pointer;
+  margin-left: 2px;
+  margin-right:2px;
+  margin-top: 5px;
+}
+.card_container_div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 6px;
+  background: #fff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font: 16px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #47525d;
 }
