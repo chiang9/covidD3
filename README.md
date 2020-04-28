@@ -1,7 +1,5 @@
 # covidD3
 
-# Project Description
-
 Transform the most recent corona virus data into visualization using d3.js and the project is hosted by node.js.
 There are various charts including the line chart, histogram, scatter plot, and group bar chart.
 
